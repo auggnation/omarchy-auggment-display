@@ -11,10 +11,9 @@ Auggment additions are the background/power/color section. Thanks, Fluffet.
 
 <p align="center">
   <img src="preview.png" alt="Display panel" height="360">
-  <img src="screenshots/arrange.png" alt="Arrange window" height="360">
 </p>
 
-## Install
+## Installation
 
 ```bash
 omarchy plugin add https://github.com/auggnation/omarchy-auggment-display --enable
@@ -24,13 +23,18 @@ omarchy plugin disable omarchy.monitor
 The second line hides the built-in Display widget, so you don't get two icons.
 Click the new icon in your bar.
 
-### Optional dependencies
+### Dependencies
 
-The Auggment extras use a few helpers and degrade gracefully if they are missing:
+The plugin is self-contained — the helper scripts live in `bin/` and are invoked
+directly, so nothing is installed and no service is registered by the plugin.
+A few optional external tools enable the Auggment extras; each feature simply
+does nothing if its tool is missing:
 
-- **`hypridle`** — required for the *Screen off* timer (`yay -S hypridle` or `pacman -S hypridle`).
-- **`pywal`/`wal`** (`pywal16`) — required for *Auto color match*.
-- **`jq`** — required when changing the screensaver timeout.
+- **`hypridle`** — required for the *Screen off* timer.
+- **`pywal`** / **`wal`** (package `pywal16`) — required for *Auto color match*.
+- **`jq`** — required to change the *Screensaver* timeout.
+
+Install these with your package manager if you want those features.
 
 ## What the Auggment section adds
 
@@ -44,8 +48,20 @@ Below the per-monitor controls, the panel gains:
 - **Auto color match** — derive the whole theme palette from the current wallpaper
   with `pywal` and apply it live, window borders included.
 
-The helper scripts live in `bin/` inside this plugin and are called directly, so
-there is no service to install. Settings are stored under `~/.config/auggment/`.
+Settings are stored under `~/.config/auggment/`.
+
+## What this plugin writes
+
+Nothing is changed until you move a control. When you do, the plugin only
+touches the specific file that control is about:
+
+| Control | File | Notes |
+| --- | --- | --- |
+| Per-monitor settings (**Keep**) | `~/.config/hypr/monitors.lua` | Written inside a `BEGIN`/`END Auggment` block; other content is left intact. |
+| Screensaver | `~/.config/omarchy/shell.json` | Only the `idle.screensaver` key is changed, via a private same-directory temp file; the file's mode and owner are preserved. |
+| Screen off | `~/.config/hypr/hypridle.conf` | Regenerated with an Auggment marker. If you already have a `hypridle.conf` that Auggment does not manage, it is backed up to `hypridle.conf.auggment.bak` first. |
+| Auto color match | `~/.config/omarchy/themes/auggment/colors.toml`, the live theme under `~/.local/state/omarchy/current/theme/` | Rewrites the palette derived from the wallpaper. Off by default. |
+| Background / Screensaver / Screen off intervals | `~/.config/auggment/` | The plugin's own settings directory. |
 
 ## Two things to know
 
@@ -66,19 +82,27 @@ o.bind("SUPER + CTRL + D", "Display", "omarchy-shell io.github.auggnation.auggme
 o.bind("SUPER + CTRL + SHIFT + D", "Arrange displays", "omarchy-shell shell toggle io.github.auggnation.auggment-display")
 ```
 
-## Uninstall
+## Removal
 
 ```bash
 omarchy plugin remove io.github.auggnation.auggment-display
 ```
 
-Press **Forget saved layout** first if you also want your monitor settings gone.
-Otherwise the block in `monitors.lua` stays.
+Press **Forget saved layout** in the panel first if you also want your monitor
+settings gone. Otherwise the Auggment block in `monitors.lua` stays.
 
-To remove the Auggment state as well:
+To also remove the Auggment settings and the managed screen-off config:
 
 ```bash
-rm -rf ~/.config/auggment ~/.config/hypr/hypridle.conf
+rm -rf ~/.config/auggment
+rm -f ~/.config/hypr/hypridle.conf
+```
+
+If a `hypridle.conf.auggment.bak` backup was created, restore or delete it too.
+To restore the built-in Display widget you disabled during installation:
+
+```bash
+omarchy plugin enable omarchy.monitor
 ```
 
 <details>

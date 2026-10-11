@@ -108,7 +108,7 @@ Panel {
   function setAuggSs(index) {
     auggSsIndex = index
     var val = auggSsTimes[index]
-    auggSsProc.command = ["bash", "-c", "mkdir -p $HOME/.config/auggment && echo " + val + " > $HOME/.config/auggment/screensaver_timeout && jq '.idle.screensaver = " + val + "' $HOME/.config/omarchy/shell.json > /tmp/shell.json.new && mv /tmp/shell.json.new $HOME/.config/omarchy/shell.json"]
+    auggSsProc.command = ["bash", "-c", "mkdir -p $HOME/.config/auggment && echo " + val + " > $HOME/.config/auggment/screensaver_timeout && " + root.auggBinDir + "/set-screensaver.sh " + val]
     auggSsProc.running = true
   }
 

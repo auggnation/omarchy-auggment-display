@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "id": "io.github.auggnation.auggment-display",
+  "name": "Auggment Display",
+  "version": "1.0.0",
+  "author": "Auggment",
+  "license": "MIT",
+  "description": "Per-display resolution, arrangement, refresh rate, scale, rotation, mirroring, VRR, HDR and brightness, plus wallpaper rotation, a screen-off timer and wallpaper-derived color matching. Fork of Advanced Displays by Fredrik Öhrström.",
+  "kinds": ["bar-widget", "overlay"],
+  "entryPoints": { "barWidget": "Panel.qml", "overlay": "Arrange.qml" },
+  "barWidget": {
+    "displayName": "Auggment Display",
+    "description": "Per-monitor configuration with wallpaper rotation, a screen-off timer and auto color matching",
+    "category": "System",
+    "allowMultiple": false,
+    "defaultSection": "right"
+  }
+}

@@ -4,7 +4,8 @@
 # Only manages ~/.config/hypr/hypridle.conf when it is absent or already marked
 # as managed by Auggment. If the user has their own hypridle.conf, it is backed
 # up to hypridle.conf.auggment.bak first (never silently discarded).
-# Screensaver/lock stay owned by the Omarchy shell.
+# Screensaver and its lock margin are set by the Display panel
+# (bin/set-screensaver.sh); this file only owns the screen-off timer.
 set -eu
 
 CONFIG="$HOME/.config/auggment"
